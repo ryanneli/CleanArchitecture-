@@ -1,0 +1,26 @@
+using System.IO.Pipes;
+using Dominio.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Data
+{
+  public class AppDbContext : DbContext
+    {
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    { }
+    
+    public DbSet<Usuarios> Usuarios { get; set; }
+    public DbSet<Obra> Obras { get; set; }
+
+    public DbSet<Cliente> clientes { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+          base.OnModelCreating(modelBuilder);
+
+          modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
+        }
+
+    }
+}
