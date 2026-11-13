@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="../../ExercicioFundamentos/ProjetoC/ProjetoC.csproj" />
   <Project Path="API/API.csproj" />
   <Project Path="Application/Application.csproj" />
   <Project Path="Dominio/Dominio.csproj" />

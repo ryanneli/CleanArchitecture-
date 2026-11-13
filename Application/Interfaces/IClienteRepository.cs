@@ -4,17 +4,15 @@ namespace Application.Interfaces
 {
   public interface IClienteRepository
     {
-        Task<IEnumerable<Cliente>> GetAllAsync();
+        Task<IEnumerable<Cliente>> ObterTodosAsync();
+        Task<Cliente?> ObterPorNomeInicioAsync(string nomeInicio);
+        Task<bool> ExistePorNomeAsync(string nome);
+        Task AdicionarAsync(Cliente cliente);
+        Task<Cliente?> ObterPorIdAsync(int id);
+        Task<bool> ExcluirAsync(Cliente cliente);
+        
 
-        Task<Cliente?> GetByIdAsync(int id);
-
-        void AddAsync(Cliente cliente);
-
-        void Update(Cliente cliente);
-
-        void Delete(Cliente cliente);
-
-        Task<bool> SaveChangesAsync();
+        
 
     }
 }

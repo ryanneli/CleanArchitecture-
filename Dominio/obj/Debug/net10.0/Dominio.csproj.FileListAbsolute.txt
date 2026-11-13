@@ -1,0 +1,13 @@
+C:\Users\Financeiro\Documents\net\SistemadeObra-Clean\Dominio\bin\Debug\net10.0\Dominio.deps.json
+C:\Users\Financeiro\Documents\net\SistemadeObra-Clean\Dominio\bin\Debug\net10.0\Dominio.dll
+C:\Users\Financeiro\Documents\net\SistemadeObra-Clean\Dominio\bin\Debug\net10.0\Dominio.pdb
+C:\Users\Financeiro\Documents\net\SistemadeObra-Clean\Dominio\obj\Debug\net10.0\Dominio.csproj.AssemblyReference.cache
+C:\Users\Financeiro\Documents\net\SistemadeObra-Clean\Dominio\obj\Debug\net10.0\Dominio.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Financeiro\Documents\net\SistemadeObra-Clean\Dominio\obj\Debug\net10.0\Dominio.AssemblyInfoInputs.cache
+C:\Users\Financeiro\Documents\net\SistemadeObra-Clean\Dominio\obj\Debug\net10.0\Dominio.AssemblyInfo.cs
+C:\Users\Financeiro\Documents\net\SistemadeObra-Clean\Dominio\obj\Debug\net10.0\Dominio.csproj.CoreCompileInputs.cache
+C:\Users\Financeiro\Documents\net\SistemadeObra-Clean\Dominio\obj\Debug\net10.0\Dominio.sourcelink.json
+C:\Users\Financeiro\Documents\net\SistemadeObra-Clean\Dominio\obj\Debug\net10.0\Dominio.dll
+C:\Users\Financeiro\Documents\net\SistemadeObra-Clean\Dominio\obj\Debug\net10.0\refint\Dominio.dll
+C:\Users\Financeiro\Documents\net\SistemadeObra-Clean\Dominio\obj\Debug\net10.0\Dominio.pdb
+C:\Users\Financeiro\Documents\net\SistemadeObra-Clean\Dominio\obj\Debug\net10.0\ref\Dominio.dll

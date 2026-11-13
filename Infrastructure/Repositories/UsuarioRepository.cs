@@ -14,7 +14,7 @@ namespace Infrastructure.Repositories
             _context = contexto;
         }
 
-        public async Task<IEnumerable<Usuarios>> GetAllAsync()
+        public async Task<IEnumerable<Usuarios?>> GetAllAsync()
         {
             return await _context.Usuarios.ToListAsync();
         }
