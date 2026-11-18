@@ -44,6 +44,8 @@ namespace Dominio.Entities
         public DateTimeOffset? DataPrevisaoTermino { get; set; }
 
         public ICollection<Usuarios> Equipe { get; set; } = new List<Usuarios>();
+        public ICollection<DocumentosObra> Documentos { get; set; } = new List<DocumentosObra>();
 
     }
- }
+
+}

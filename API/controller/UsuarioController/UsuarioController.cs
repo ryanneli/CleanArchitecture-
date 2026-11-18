@@ -26,9 +26,8 @@ namespace API.Controllers // Ajustado para refletir a pasta correta
             var usuarios = await _usuarioService.GetAllAsync();
             return Ok(usuarios);
         }
-
+        [AllowAnonymous]
         [HttpPost]
-        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> AddAsync([FromBody] CriarUsuarioDto usuario)
         {
             // O serviço retorna bool (true para sucesso, false para falha)

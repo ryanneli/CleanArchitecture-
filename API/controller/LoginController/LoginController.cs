@@ -16,6 +16,7 @@ namespace API.Controllers
             _usuarioService = usuarioService;
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {

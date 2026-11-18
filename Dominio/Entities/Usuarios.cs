@@ -22,9 +22,7 @@ namespace Dominio.Entities
         public bool PermitirAdicionarUsuario { get; set; } = false;
         public bool PermitirAdicionarCliente { get; set; } = false;
         public bool PermitirMoverAlocarFuncionario { get; set; } = false;
-
         public string? AvatarUrl => FotoUrl ?? $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(Nome)}&background=0d6efd&color=fff&size=128";
-
         public ICollection<Obra> Obras { get; set; } = new List<Obra>();
     }
 }

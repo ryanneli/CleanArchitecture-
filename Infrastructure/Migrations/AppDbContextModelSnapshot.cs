@@ -42,6 +42,37 @@ namespace Infrastructure.Migrations
                     b.ToTable("Clientes");
                 });
 
+            modelBuilder.Entity("Dominio.Entities.DocumentosObra", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Concluido")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("ObraId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Sigla")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ObraId");
+
+                    b.ToTable("DocumentosObras");
+                });
+
             modelBuilder.Entity("Dominio.Entities.Obra", b =>
                 {
                     b.Property<int>("id")
@@ -84,7 +115,8 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StatusObra")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("Status");
 
                     b.Property<int>("TipoCadastro")
                         .HasColumnType("int");
@@ -353,6 +385,17 @@ namespace Infrastructure.Migrations
                     b.ToTable("ObraUsuarios");
                 });
 
+            modelBuilder.Entity("Dominio.Entities.DocumentosObra", b =>
+                {
+                    b.HasOne("Dominio.Entities.Obra", "Obra")
+                        .WithMany("Documentos")
+                        .HasForeignKey("ObraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Obra");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
@@ -417,6 +460,11 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("Obrasid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Dominio.Entities.Obra", b =>
+                {
+                    b.Navigation("Documentos");
                 });
 #pragma warning restore 612, 618
         }

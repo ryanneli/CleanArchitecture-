@@ -1,4 +1,5 @@
 using Application.Interfaces;
+using Application.DTO;
 using Dominio.DTOs;
 using Dominio.Entities;
 using Microsoft.Extensions.Configuration;
@@ -55,7 +56,10 @@ namespace Application.Services
                     PermitirAdicionarCliente: false,
                     PermitirMoverAlocarFuncionario: e.PermitirMoverAlocarFuncionario,
                     PermitirEditarFuncionario: e.PermitirEditarFuncionario
-                )).ToList()
+                )).ToList(),
+                o.Documentos?.Select(d => new DocumentoDto(
+                    d.Id, d.Sigla, d.Nome, d.Concluido
+                )).ToList() ?? new List<DocumentoDto>()
             ));
         }
 
@@ -93,7 +97,8 @@ namespace Application.Services
                 obra.Grupo,
                 obra.DataCriacao,
                 obra.DataInicio,
-                obra.DataPrevisaoTermino
+                obra.DataPrevisaoTermino,
+                obra.Documentos?.Select(d => new DocumentoDto(d.Id, d.Sigla, d.Nome, d.Concluido)).ToList() ?? new List<DocumentoDto>()
             );
         }
 
@@ -119,7 +124,19 @@ namespace Application.Services
                 Grupo = dto.Grupo,
                 DataInicio = dto.DataInicio,
                 DataPrevisaoTermino = dto.DataPrevisaoTermino,
-                DataCriacao = DateTime.Now
+                DataCriacao = DateTime.Now,
+                Documentos = new List<DocumentosObra>
+                {
+                    new DocumentosObra { Sigla = "LQP", Nome = "Limpeza Química e Passivação", Concluido = false },
+                    new DocumentosObra { Sigla = "REI", Nome = "Relatório de Endoscopia Industrial", Concluido = false },
+                    new DocumentosObra { Sigla = "RIF", Nome = "Relatório de Inspeção de Fabricação", Concluido = false },
+                    new DocumentosObra { Sigla = "FDS", Nome = "Ficha de Dados de Segurança", Concluido = false },
+                    new DocumentosObra { Sigla = "EP",  Nome = "Eletropolimento", Concluido = false },
+                    new DocumentosObra { Sigla = "RDR", Nome = "Relatório de Rugosidade", Concluido = false },
+                    new DocumentosObra { Sigla = "RLP", Nome = "Relatório de Líquido Penetrante", Concluido = false },
+                    new DocumentosObra { Sigla = "RTH", Nome = "Relatório de Teste Hidrostático", Concluido = false }
+                }
+
             };
 
             await _obraRepository.AdicionarAsync(novaObra);
@@ -138,7 +155,8 @@ namespace Application.Services
                 novaObra.Grupo,
                 novaObra.DataCriacao,
                 novaObra.DataInicio,
-                novaObra.DataPrevisaoTermino
+                novaObra.DataPrevisaoTermino,
+                novaObra.Documentos?.Select(d => new DocumentoDto(d.Id, d.Sigla, d.Nome, d.Concluido)).ToList() ?? new List<DocumentoDto>()
             );
         }
 
@@ -165,6 +183,34 @@ namespace Application.Services
             obra.Grupo = dto.Grupo;
             obra.DataInicio = dto.DataInicio;
             obra.DataPrevisaoTermino = dto.DataPrevisaoTermino;
+            
+            if (dto.Documentos != null)
+{
+                obra.Documentos ??= new List<DocumentosObra>();
+
+                foreach (var docDto in dto.Documentos)
+                {
+                    // Procura pelo ID ou pela Sigla para identificar se já existe
+                    var documentoEntidade = obra.Documentos.FirstOrDefault(d => d.Id == docDto.Id || (!string.IsNullOrEmpty(docDto.Sigla) && d.Sigla == docDto.Sigla));
+
+                    if (documentoEntidade != null)
+                    {
+                        // Se já existe, apenas atualiza o status
+                        documentoEntidade.Concluido = docDto.Concluido;
+                    }
+                    else
+                    {
+                        // Se a obra é antiga e não tem esse documento, cria ele agora!
+                        obra.Documentos.Add(new DocumentosObra
+                        {
+                            Sigla = docDto.Sigla ?? "DOC",
+                            Nome = docDto.Nome ?? "Documento",
+                            Concluido = docDto.Concluido
+                        });
+                    }
+                }
+            }
+
 
             await _obraRepository.AtualizarAsync(obra);
             return true;

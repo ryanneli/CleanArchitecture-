@@ -2,6 +2,7 @@ using Dominio.Entities;
 using Infrastructure.Data;
 using Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Application.DTO;
 
 namespace Infrastructure.Repositories
 {
@@ -35,13 +36,11 @@ namespace Infrastructure.Repositories
             await _context.Obras.AddAsync(obra);
             await _context.SaveChangesAsync();
         }
-
         public async Task AtualizarAsync(Obra obra)
         {
             _context.Obras.Update(obra);
             await _context.SaveChangesAsync();
         }
-
         public async Task DeletarAsync(Obra obra)
         {
             _context.Obras.Remove(obra);

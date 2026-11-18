@@ -52,7 +52,36 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
     {
-        policy.WithOrigins("http://localhost:4200", "https://localhost:4200")
+        policy.SetIsOriginAllowed(origin =>
+            {
+                if (!Uri.TryCreate(origin, UriKind.Absolute, out var uri))
+                    return false;
+
+                if (uri.Port != 4200)
+                    return false;
+
+                var host = uri.Host;
+                return host.Equals("localhost", StringComparison.OrdinalIgnoreCase)
+                    || host.Equals("127.0.0.1", StringComparison.OrdinalIgnoreCase)
+                    || host.StartsWith("10.", StringComparison.Ordinal)
+                    || host.StartsWith("192.168.", StringComparison.Ordinal)
+                    || host.StartsWith("172.16.", StringComparison.Ordinal)
+                    || host.StartsWith("172.17.", StringComparison.Ordinal)
+                    || host.StartsWith("172.18.", StringComparison.Ordinal)
+                    || host.StartsWith("172.19.", StringComparison.Ordinal)
+                    || host.StartsWith("172.20.", StringComparison.Ordinal)
+                    || host.StartsWith("172.21.", StringComparison.Ordinal)
+                    || host.StartsWith("172.22.", StringComparison.Ordinal)
+                    || host.StartsWith("172.23.", StringComparison.Ordinal)
+                    || host.StartsWith("172.24.", StringComparison.Ordinal)
+                    || host.StartsWith("172.25.", StringComparison.Ordinal)
+                    || host.StartsWith("172.26.", StringComparison.Ordinal)
+                    || host.StartsWith("172.27.", StringComparison.Ordinal)
+                    || host.StartsWith("172.28.", StringComparison.Ordinal)
+                    || host.StartsWith("172.29.", StringComparison.Ordinal)
+                    || host.StartsWith("172.30.", StringComparison.Ordinal)
+                    || host.StartsWith("172.31.", StringComparison.Ordinal);
+            })
             .AllowAnyHeader()
             .AllowAnyMethod();
     });

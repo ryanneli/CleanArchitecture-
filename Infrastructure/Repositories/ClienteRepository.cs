@@ -38,5 +38,17 @@ namespace Infrastructure.Repositories
             await _context.Clientes.AddAsync(cliente);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Cliente?> ObterPorIdAsync(int id)
+        {
+            return await _context.Clientes.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task<bool> ExcluirAsync(Cliente cliente)
+        {
+            _context.Clientes.Remove(cliente);
+            var rowsAffected = await _context.SaveChangesAsync();
+            return rowsAffected > 0;
+        }
     }
 }

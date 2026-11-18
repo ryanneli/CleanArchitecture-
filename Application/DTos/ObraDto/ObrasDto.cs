@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using Dominio.Entities;
+using Application.DTO;
 
 namespace Dominio.DTOs
 {
@@ -24,7 +26,8 @@ namespace Dominio.DTOs
         string? Observacao,
         string? Grupo,
         DateTimeOffset? DataInicio,
-        DateTimeOffset? DataPrevisaoTermino
+        DateTimeOffset? DataPrevisaoTermino,
+        List<AtualizarDocumentoDto>? Documentos
     );
 
     // DTO usado para listar as obras em formato de cards (incluindo a equipe alocada)
@@ -40,7 +43,8 @@ namespace Dominio.DTOs
         string? Observacao,
         DateTimeOffset? DataInicio,
         DateTimeOffset? DataPrevisaoTermino,
-        List<UsuarioDtoExibir> Equipe
+        List<UsuarioDtoExibir> Equipe,
+        List<DocumentoDto> Documentos
     );
 
     // DTO focado em exibir os detalhes completos de uma obra específica
@@ -58,7 +62,8 @@ namespace Dominio.DTOs
         string? Grupo,
         DateTime DataCriacao,
         DateTimeOffset? DataInicio,
-        DateTimeOffset? DataPrevisaoTermino
+        DateTimeOffset? DataPrevisaoTermino,
+        List<DocumentoDto> Documentos
     );
 
     // DTO usado na ação de arrastar e soltar (Drag & Drop) para alocar um funcionário na obra

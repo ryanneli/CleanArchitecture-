@@ -5,7 +5,7 @@ using Dominio.Entities;
 namespace Application.Services;
 
 public sealed class ClienteService(IClienteRepository clienteRepository)
-{
+{ 
     public async Task<IEnumerable<ClienteDto>> GetAllAsync()
     {
         var clientes = await clienteRepository.ObterTodosAsync();
