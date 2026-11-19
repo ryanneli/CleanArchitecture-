@@ -73,6 +73,59 @@ namespace Infrastructure.Migrations
                     b.ToTable("DocumentosObras");
                 });
 
+            modelBuilder.Entity("Dominio.Entities.Equipamento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CodigoPatrimonio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CriadoEm")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DataFimLocacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DataInicioLocacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FornecedorLocacao")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("FotoUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<int?>("ObraId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Origem")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ObraId");
+
+                    b.HasIndex("Origem");
+
+                    b.HasIndex("Status");
+
+                    b.ToTable("Equipamentos", (string)null);
+                });
+
             modelBuilder.Entity("Dominio.Entities.Obra", b =>
                 {
                     b.Property<int>("id")
@@ -396,6 +449,16 @@ namespace Infrastructure.Migrations
                     b.Navigation("Obra");
                 });
 
+            modelBuilder.Entity("Dominio.Entities.Equipamento", b =>
+                {
+                    b.HasOne("Dominio.Entities.Obra", "Obra")
+                        .WithMany("Equipamentos")
+                        .HasForeignKey("ObraId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Obra");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
@@ -465,6 +528,8 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Dominio.Entities.Obra", b =>
                 {
                     b.Navigation("Documentos");
+
+                    b.Navigation("Equipamentos");
                 });
 #pragma warning restore 612, 618
         }

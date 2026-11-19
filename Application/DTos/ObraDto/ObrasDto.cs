@@ -4,6 +4,15 @@ using Application.DTO;
 
 namespace Dominio.DTOs
 {
+    public sealed record EquipamentoObraDto(
+        int Id,
+        string Nome,
+        string? CodigoPatrimonio,
+        string? FotoUrl,
+        string Origem,
+        string Status,
+        bool ComDefeito);
+
     public sealed record CriarObraDto(
         [Required(ErrorMessage = "O número da OS é obrigatório.")]
         [StringLength(255)]
@@ -44,7 +53,8 @@ namespace Dominio.DTOs
         DateTimeOffset? DataInicio,
         DateTimeOffset? DataPrevisaoTermino,
         List<UsuarioDtoExibir> Equipe,
-        List<DocumentoDto> Documentos
+        List<DocumentoDto> Documentos,
+        List<EquipamentoObraDto> Equipamentos
     );
 
     // DTO focado em exibir os detalhes completos de uma obra específica
@@ -63,7 +73,8 @@ namespace Dominio.DTOs
         DateTime DataCriacao,
         DateTimeOffset? DataInicio,
         DateTimeOffset? DataPrevisaoTermino,
-        List<DocumentoDto> Documentos
+        List<DocumentoDto> Documentos,
+        List<EquipamentoObraDto> Equipamentos
     );
 
     // DTO usado na ação de arrastar e soltar (Drag & Drop) para alocar um funcionário na obra

@@ -17,13 +17,20 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<Obra>> ObterTodasComEquipeAsync()
         {
-            return await _context.Obras.AsNoTracking().Include(o => o.Equipe).ToListAsync();
+            return await _context.Obras.AsNoTracking()
+                .Include(o => o.Equipe)
+                .Include(o => o.Documentos)
+                .Include(o => o.Equipamentos)
+                .ToListAsync();
 
         }
 
         public async Task<Obra?> ObterPorIdAsync(int id)
         {
-            return await _context.Obras.FindAsync(id);
+            return await _context.Obras
+                .Include(o => o.Documentos)
+                .Include(o => o.Equipamentos)
+                .FirstOrDefaultAsync(o => o.id == id);
         }
 
         public async Task<Obra?> ObterComEquipePorIdAsync(int id)

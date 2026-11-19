@@ -13,6 +13,9 @@ namespace Infrastructure.Data
     public DbSet<Usuarios> Usuarios { get; set; }
     public DbSet<Obra> Obras { get; set; }
     public DbSet<Cliente> Clientes { get; set; }
+
+    public DbSet<Equipamento> Equipamentos => Set<Equipamento>();
+    
     public DbSet<DocumentosObra> DocumentosObras { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

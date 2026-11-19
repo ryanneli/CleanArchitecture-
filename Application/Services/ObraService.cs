@@ -11,17 +11,20 @@ namespace Application.Services
         private readonly IObraRepository _obraRepository;
         private readonly IClienteRepository _clienteRepository;
         private readonly IUsuarioRepository _usuarioRepository; // Repositório para buscar funcionários/usuários
+        private readonly IEquipamentoRepository _equipamentoRepository;
         private readonly string _publicBaseUrl;
 
         public ObraService(
             IObraRepository obraRepository, 
             IClienteRepository clienteRepository,
             IUsuarioRepository usuarioRepository,
+            IEquipamentoRepository equipamentoRepository,
             IConfiguration configuration)
         {
             _obraRepository = obraRepository;
             _clienteRepository = clienteRepository;
             _usuarioRepository = usuarioRepository;
+            _equipamentoRepository = equipamentoRepository;
             _publicBaseUrl = (configuration["PublicBaseUrl"] ?? "http://localhost:5021").TrimEnd('/');
         }
 
@@ -59,7 +62,12 @@ namespace Application.Services
                 )).ToList(),
                 o.Documentos?.Select(d => new DocumentoDto(
                     d.Id, d.Sigla, d.Nome, d.Concluido
-                )).ToList() ?? new List<DocumentoDto>()
+                )).ToList() ?? new List<DocumentoDto>(),
+                o.Equipamentos?.Select(e => new EquipamentoObraDto(
+                    e.Id, e.Nome, e.CodigoPatrimonio, e.FotoUrl,
+                    e.Origem.ToString(), e.Status.ToString(),
+                    e.Status == Dominio.Entities.Enums.StatusEquipamento.ComDefeito
+                )).ToList() ?? new List<EquipamentoObraDto>()
             ));
         }
 
@@ -98,7 +106,12 @@ namespace Application.Services
                 obra.DataCriacao,
                 obra.DataInicio,
                 obra.DataPrevisaoTermino,
-                obra.Documentos?.Select(d => new DocumentoDto(d.Id, d.Sigla, d.Nome, d.Concluido)).ToList() ?? new List<DocumentoDto>()
+                obra.Documentos?.Select(d => new DocumentoDto(d.Id, d.Sigla, d.Nome, d.Concluido)).ToList() ?? new List<DocumentoDto>(),
+                obra.Equipamentos?.Select(e => new EquipamentoObraDto(
+                    e.Id, e.Nome, e.CodigoPatrimonio, e.FotoUrl,
+                    e.Origem.ToString(), e.Status.ToString(),
+                    e.Status == Dominio.Entities.Enums.StatusEquipamento.ComDefeito
+                )).ToList() ?? new List<EquipamentoObraDto>()
             );
         }
 
@@ -125,17 +138,12 @@ namespace Application.Services
                 DataInicio = dto.DataInicio,
                 DataPrevisaoTermino = dto.DataPrevisaoTermino,
                 DataCriacao = DateTime.Now,
-                Documentos = new List<DocumentosObra>
+                Documentos = dto.Documentos?.Select(d => new DocumentosObra
                 {
-                    new DocumentosObra { Sigla = "LQP", Nome = "Limpeza Química e Passivação", Concluido = false },
-                    new DocumentosObra { Sigla = "REI", Nome = "Relatório de Endoscopia Industrial", Concluido = false },
-                    new DocumentosObra { Sigla = "RIF", Nome = "Relatório de Inspeção de Fabricação", Concluido = false },
-                    new DocumentosObra { Sigla = "FDS", Nome = "Ficha de Dados de Segurança", Concluido = false },
-                    new DocumentosObra { Sigla = "EP",  Nome = "Eletropolimento", Concluido = false },
-                    new DocumentosObra { Sigla = "RDR", Nome = "Relatório de Rugosidade", Concluido = false },
-                    new DocumentosObra { Sigla = "RLP", Nome = "Relatório de Líquido Penetrante", Concluido = false },
-                    new DocumentosObra { Sigla = "RTH", Nome = "Relatório de Teste Hidrostático", Concluido = false }
-                }
+                    Sigla = d.Sigla.Trim().ToUpper(),
+                    Nome = d.Nome,
+                    Concluido = d.Concluido
+                }).ToList() ?? new List<DocumentosObra>()
 
             };
 
@@ -156,7 +164,8 @@ namespace Application.Services
                 novaObra.DataCriacao,
                 novaObra.DataInicio,
                 novaObra.DataPrevisaoTermino,
-                novaObra.Documentos?.Select(d => new DocumentoDto(d.Id, d.Sigla, d.Nome, d.Concluido)).ToList() ?? new List<DocumentoDto>()
+                novaObra.Documentos?.Select(d => new DocumentoDto(d.Id, d.Sigla, d.Nome, d.Concluido)).ToList() ?? new List<DocumentoDto>(),
+                new List<EquipamentoObraDto>()
             );
         }
 
@@ -185,32 +194,59 @@ namespace Application.Services
             obra.DataPrevisaoTermino = dto.DataPrevisaoTermino;
             
             if (dto.Documentos != null)
-{
+            {
                 obra.Documentos ??= new List<DocumentosObra>();
+
+                var siglasRecebidas = dto.Documentos
+                    .Where(d => !string.IsNullOrWhiteSpace(d.Sigla))
+                    .Select(d => d.Sigla.Trim().ToUpper())
+                    .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+                foreach (var documentoRemovido in obra.Documentos
+                    .Where(d => !siglasRecebidas.Contains(d.Sigla))
+                    .ToList())
+                {
+                    obra.Documentos.Remove(documentoRemovido);
+                }
 
                 foreach (var docDto in dto.Documentos)
                 {
-                    // Procura pelo ID ou pela Sigla para identificar se já existe
-                    var documentoEntidade = obra.Documentos.FirstOrDefault(d => d.Id == docDto.Id || (!string.IsNullOrEmpty(docDto.Sigla) && d.Sigla == docDto.Sigla));
+                    var sigla = docDto.Sigla?.Trim().ToUpper();
+                    if (string.IsNullOrWhiteSpace(sigla))
+                        continue;
+
+                    var documentoEntidade = obra.Documentos.FirstOrDefault(d =>
+                        (docDto.Id > 0 && d.Id == docDto.Id) ||
+                        d.Sigla.Equals(sigla, StringComparison.OrdinalIgnoreCase));
 
                     if (documentoEntidade != null)
                     {
-                        // Se já existe, apenas atualiza o status
+                        documentoEntidade.Sigla = sigla;
+                        documentoEntidade.Nome = string.IsNullOrWhiteSpace(docDto.Nome)
+                            ? documentoEntidade.Nome
+                            : docDto.Nome;
                         documentoEntidade.Concluido = docDto.Concluido;
                     }
                     else
                     {
-                        // Se a obra é antiga e não tem esse documento, cria ele agora!
                         obra.Documentos.Add(new DocumentosObra
                         {
-                            Sigla = docDto.Sigla ?? "DOC",
-                            Nome = docDto.Nome ?? "Documento",
+                            Sigla = sigla,
+                            Nome = string.IsNullOrWhiteSpace(docDto.Nome) ? sigla : docDto.Nome,
                             Concluido = docDto.Concluido
                         });
                     }
                 }
             }
 
+            if (statusEnum == StatusObra.Concluida)
+            {
+                foreach (var equipamento in obra.Equipamentos.ToList())
+                {
+                    equipamento.DesalocarDaObra(equipamento.Origem == Dominio.Entities.Enums.OrigemEquipamento.Locado);
+                    await _equipamentoRepository.AtualizarAsync(equipamento);
+                }
+            }
 
             await _obraRepository.AtualizarAsync(obra);
             return true;

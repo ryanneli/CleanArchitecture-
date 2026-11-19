@@ -5,6 +5,7 @@ using Scalar.AspNetCore;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.FileProviders;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +38,10 @@ builder.Services.AddAuthentication(options =>
 });
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 builder.Services.AddOpenApi();
 builder.Services.AddAuthorization(options =>
 {
@@ -91,6 +95,11 @@ var userPhotosPath = Path.GetFullPath(
     builder.Configuration["FileStorage:UserPhotosPath"] ?? Path.Combine("wwwroot", "uploads", "usuarios"),
     app.Environment.ContentRootPath);
 Directory.CreateDirectory(userPhotosPath);
+
+var equipmentPhotosPath = Path.GetFullPath(
+    builder.Configuration["FileStorage:EquipmentPhotosPath"] ?? Path.Combine("wwwroot", "uploads", "equipamentos"),
+    app.Environment.ContentRootPath);
+Directory.CreateDirectory(equipmentPhotosPath);
 
 if (app.Environment.IsDevelopment())
 {

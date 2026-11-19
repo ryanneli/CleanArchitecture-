@@ -46,6 +46,8 @@ namespace Dominio.Entities
         public ICollection<Usuarios> Equipe { get; set; } = new List<Usuarios>();
         public ICollection<DocumentosObra> Documentos { get; set; } = new List<DocumentosObra>();
 
+        public ICollection<Equipamento> Equipamentos { get; set; } = new List<Equipamento>();
+
     }
 
 }

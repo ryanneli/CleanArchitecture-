@@ -20,10 +20,12 @@ namespace infrastructure.IoC
             services.AddScoped<IUsuarioRepository, UsuarioRepositorio>();
             services.AddScoped<IObraRepository, ObraRepository>();
             services.AddScoped<IClienteRepository, ClienteRepository>();
+            services.AddScoped<IEquipamentoRepository, EquipamentoRepository>();
             //SERVIÇOS
             services.AddScoped<UsuarioService>();
             services.AddScoped<ObraService>();
             services.AddScoped<ClienteService>();
+            services.AddScoped<IEquipamentoService, EquipamentoService>();
            
            //login autenticação jwt
             services.AddIdentity<Usuarios, IdentityRole<int>>(options =>
