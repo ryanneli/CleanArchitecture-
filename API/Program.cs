@@ -118,6 +118,11 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(userPhotosPath),
     RequestPath = "/uploads/usuarios"
 });
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(equipmentPhotosPath),
+    RequestPath = "/uploads/equipamentos"
+});
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
